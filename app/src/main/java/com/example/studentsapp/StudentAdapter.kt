@@ -30,7 +30,17 @@ class StudentAdapter(
                 student.checked = isChecked
             }
 
-            itemView.setOnClickListener { listener(student) }
+            // לחיצה על כל הפריט למעבר לעמוד פרטי הסטודנט
+            itemView.setOnClickListener {
+                val intent = android.content.Intent(itemView.context, StudentDetailsActivity::class.java)
+                intent.putExtra("name", student.name)
+                intent.putExtra("id", student.id)
+                intent.putExtra("phone", student.phone)
+                intent.putExtra("address", student.address)
+                intent.putExtra("imageResId", student.imageResId)
+                intent.putExtra("checked", student.checked)
+                itemView.context.startActivity(intent)
+            }
         }
     }
 
