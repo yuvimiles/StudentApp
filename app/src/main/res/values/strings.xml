@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">studentsApp</string>
+    <string name="name_hint">Name</string>
+    <string name="id_hint">ID</string>
+    <string name="phone_hint">Phone</string>
+    <string name="address_hint">Address</string>
+    <string name="add_student">Add Student</string>
+    <string name="cancel">Cancel</string>
 </resources>
