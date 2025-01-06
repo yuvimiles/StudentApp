@@ -94,6 +94,14 @@
                 android:layout_height="wrap_content"
                 android:text="Checked" />
 
+            <!-- כפתור Edit Student -->
+            <Button
+                android:id="@+id/buttonEditStudent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit Student"
+                android:layout_marginTop="16dp" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

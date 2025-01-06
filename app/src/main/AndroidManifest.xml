@@ -23,6 +23,11 @@
             android:name=".StudentDetailsActivity"
             android:exported="false" />
 
+        <!-- EditStudentActivity -->
+        <activity
+            android:name=".EditStudentActivity"
+            android:exported="false" />
+
         <!-- MainActivity -->
         <activity
             android:name=".MainActivity"
