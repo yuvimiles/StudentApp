@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         val studentList = mutableListOf<Student>()
+        const val STUDENT_DETAILS_REQUEST = 200
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,59 +30,34 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewStudents)
         val fabAddStudent: FloatingActionButton = findViewById(R.id.fabAddStudent)
 
-        // הגדרת ActivityResultLauncher
+        // Setup ActivityResultLauncher
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val data = result.data
             when (result.resultCode) {
                 Activity.RESULT_OK -> {
-                    val data = result.data
-                    val id = data?.getStringExtra("id") ?: return@registerForActivityResult
-                    val name = data.getStringExtra("name") ?: return@registerForActivityResult
-                    val phone = data.getStringExtra("phone") ?: return@registerForActivityResult
-                    val address = data.getStringExtra("address") ?: return@registerForActivityResult
-                    val checked = data.getBooleanExtra("checked", false)
-
-                    val index = studentList.indexOfFirst { it.id == id }
-                    if (index != -1) {
-                        val existingStudent = studentList[index]
-                        existingStudent.name = name
-                        existingStudent.phone = phone
-                        existingStudent.address = address
-                        existingStudent.checked = checked
-                        adapter.notifyItemChanged(index)
-                        Log.d("MainActivity", "Updated student: $existingStudent")
+                    if (data?.getBooleanExtra("delete", false) == true) {
+                        // אם זו בקשת מחיקה מ-StudentDetailsActivity
+                        handleStudentDelete(data)
                     } else {
-                        val newStudent = Student(name, id, phone, address, checked, R.drawable.ic_student)
-                        studentList.add(newStudent)
-                        adapter.notifyItemInserted(studentList.size - 1)
-                        Log.d("MainActivity", "Added new student: $newStudent")
+                        // אם זה עדכון רגיל
+                        handleStudentUpdate(data)
                     }
                 }
-
                 EditStudentActivity.DELETE_RESULT -> {
-                    val data = result.data
-                    val id = data?.getStringExtra("id") ?: return@registerForActivityResult
-
-                    val index = studentList.indexOfFirst { it.id == id }
-                    if (index != -1) {
-                        studentList.removeAt(index)
-                        adapter.notifyItemRemoved(index)
-                        Log.d("MainActivity", "Deleted student with ID: $id")
-                        Toast.makeText(this, "Student deleted successfully", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Log.d("MainActivity", "Student with ID: $id not found")
-                        Toast.makeText(this, "Student not found", Toast.LENGTH_SHORT).show()
-                    }
+                    handleStudentDelete(data)
                 }
             }
         }
 
-        // הגדרת Adapter ל-RecyclerView
+        // Setup RecyclerView Adapter
         adapter = StudentAdapter(studentList) { student ->
-            val intent = Intent(this, EditStudentActivity::class.java).apply {
+            val intent = Intent(this, StudentDetailsActivity::class.java).apply {
                 putExtra("name", student.name)
                 putExtra("id", student.id)
                 putExtra("phone", student.phone)
                 putExtra("address", student.address)
+                putExtra("imageResId", student.imageResId)
+                putExtra("checked", student.checked)
             }
             resultLauncher.launch(intent)
         }
@@ -94,10 +70,53 @@ class MainActivity : AppCompatActivity() {
             resultLauncher.launch(intent)
         }
 
+        // Add sample data for testing
         if (studentList.isEmpty()) {
             studentList.add(Student("John Doe", "12345", "050-1234567", "Tel Aviv", false, R.drawable.ic_student))
             studentList.add(Student("Jane Smith", "67890", "052-7654321", "Jerusalem", true, R.drawable.ic_student))
             studentList.add(Student("Alice Brown", "11223", "054-9876543", "Haifa", false, R.drawable.ic_student))
+        }
+    }
+
+    private fun handleStudentUpdate(data: Intent?) {
+        val id = data?.getStringExtra("id") ?: return
+        val name = data.getStringExtra("name") ?: return
+        val phone = data.getStringExtra("phone") ?: return
+        val address = data.getStringExtra("address") ?: return
+        val checked = data.getBooleanExtra("checked", false)
+
+        val index = studentList.indexOfFirst { it.id == id }
+        if (index != -1) {
+            val existingStudent = studentList[index]
+            existingStudent.apply {
+                this.name = name
+                this.phone = phone
+                this.address = address
+                this.checked = checked
+            }
+            adapter.notifyItemChanged(index)
+            Log.d("MainActivity", "Updated student: $existingStudent")
+        } else {
+            val newStudent = Student(name, id, phone, address, checked, R.drawable.ic_student)
+            studentList.add(newStudent)
+            adapter.notifyItemInserted(studentList.size - 1)
+            Log.d("MainActivity", "Added new student: $newStudent")
+        }
+    }
+
+    private fun handleStudentDelete(data: Intent?) {
+        val id = data?.getStringExtra("id") ?: return
+        val index = studentList.indexOfFirst { it.id == id }
+
+        if (index != -1) {
+            studentList.removeAt(index)
+            adapter.notifyItemRemoved(index)
+            adapter.notifyItemRangeChanged(index, studentList.size)  // עדכון מיקומים של פריטים נוספים
+            Log.d("MainActivity", "Deleted student with ID: $id")
+            Toast.makeText(this, "Student deleted successfully", Toast.LENGTH_SHORT).show()
+        } else {
+            Log.d("MainActivity", "Student with ID: $id not found")
+            Toast.makeText(this, "Student not found", Toast.LENGTH_SHORT).show()
         }
     }
 }

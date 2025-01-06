@@ -38,7 +38,7 @@ class StudentDetailsActivity : AppCompatActivity() {
         val phoneTextView: TextView = findViewById(R.id.textViewStudentPhone)
         val addressTextView: TextView = findViewById(R.id.textViewStudentAddress)
         val checkboxChecked: CheckBox = findViewById(R.id.checkboxCheckedDetails)
-        val editButton: Button = findViewById(R.id.buttonEditStudent) // כפתור עריכה
+        val editButton: Button = findViewById(R.id.buttonEditStudent)
 
         // עדכון Views עם הנתונים
         imageView.setImageResource(imageResId)
@@ -62,7 +62,7 @@ class StudentDetailsActivity : AppCompatActivity() {
                 putExtra("address", address)
                 putExtra("checked", isChecked)
             }
-            startActivityForResult(intent, 300) // בקשה לעריכת סטודנט
+            startActivityForResult(intent, 300)
         }
     }
 
@@ -70,23 +70,36 @@ class StudentDetailsActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 300 && resultCode == Activity.RESULT_OK) {
-            val updatedName = data?.getStringExtra("name") ?: return
-            val updatedPhone = data.getStringExtra("phone") ?: return
-            val updatedAddress = data.getStringExtra("address") ?: return
-            val updatedChecked = data.getBooleanExtra("checked", false)
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                if (requestCode == 300) {
+                    val updatedName = data?.getStringExtra("name") ?: return
+                    val updatedPhone = data.getStringExtra("phone") ?: return
+                    val updatedAddress = data.getStringExtra("address") ?: return
+                    val updatedChecked = data.getBooleanExtra("checked", false)
 
-            // עדכון ה-Views עם הנתונים החדשים
-            findViewById<TextView>(R.id.textViewStudentName).text = "Name: $updatedName"
-            findViewById<TextView>(R.id.textViewStudentPhone).text = "Phone: $updatedPhone"
-            findViewById<TextView>(R.id.textViewStudentAddress).text = "Address: $updatedAddress"
-            findViewById<CheckBox>(R.id.checkboxCheckedDetails).isChecked = updatedChecked
+                    // עדכון ה-Views עם הנתונים החדשים
+                    findViewById<TextView>(R.id.textViewStudentName).text = "Name: $updatedName"
+                    findViewById<TextView>(R.id.textViewStudentPhone).text = "Phone: $updatedPhone"
+                    findViewById<TextView>(R.id.textViewStudentAddress).text = "Address: $updatedAddress"
+                    findViewById<CheckBox>(R.id.checkboxCheckedDetails).isChecked = updatedChecked
 
-            // עדכון הנתונים שנשלחים בחזרה ל-MainActivity
-            isChecked = updatedChecked
-            intent.putExtra("name", updatedName)
-            intent.putExtra("phone", updatedPhone)
-            intent.putExtra("address", updatedAddress)
+                    // עדכון הנתונים שנשלחים בחזרה ל-MainActivity
+                    isChecked = updatedChecked
+                    intent.putExtra("name", updatedName)
+                    intent.putExtra("phone", updatedPhone)
+                    intent.putExtra("address", updatedAddress)
+                    intent.putExtra("checked", updatedChecked)
+                }
+            }
+            EditStudentActivity.DELETE_RESULT -> {
+                // העברת בקשת המחיקה ל-MainActivity
+                val resultIntent = Intent()
+                resultIntent.putExtra("id", studentId)
+                resultIntent.putExtra("delete", true)
+                setResult(EditStudentActivity.DELETE_RESULT, resultIntent)
+                finish()
+            }
         }
     }
 

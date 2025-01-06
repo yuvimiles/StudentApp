@@ -51,11 +51,11 @@ class EditStudentActivity : AppCompatActivity() {
 
         // מחיקת סטודנט
         deleteButton.setOnClickListener {
-            Log.d("EditStudentActivity", "Delete button clicked for ID: $id")
             val resultIntent = Intent().apply {
-                putExtra("id", id)
+                putExtra("id", idEditText.text.toString())
+                putExtra("delete", true)
             }
-            setResult(DELETE_RESULT, resultIntent)
+            setResult(EditStudentActivity.DELETE_RESULT, resultIntent)
             finish()
         }
 

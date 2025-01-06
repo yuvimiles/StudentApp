@@ -12,4 +12,6 @@
     <string name="hint_address">Enter Address</string>
     <string name="save_changes">Save Changes</string>
     <string name="delete_student">Delete Student</string>
+    <string name="edit">edit Student</string>
+
 </resources>
