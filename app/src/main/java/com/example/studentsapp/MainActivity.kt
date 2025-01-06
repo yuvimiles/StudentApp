@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import android.util.Log
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,62 +31,73 @@ class MainActivity : AppCompatActivity() {
 
         // הגדרת ActivityResultLauncher
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data = result.data
-                val name = data?.getStringExtra("name") ?: return@registerForActivityResult
-                val id = data.getStringExtra("id") ?: return@registerForActivityResult
-                val phone = data.getStringExtra("phone") ?: return@registerForActivityResult
-                val address = data.getStringExtra("address") ?: return@registerForActivityResult
-                val checked = data.getBooleanExtra("checked", false)
+            when (result.resultCode) {
+                Activity.RESULT_OK -> {
+                    val data = result.data
+                    val id = data?.getStringExtra("id") ?: return@registerForActivityResult
+                    val name = data.getStringExtra("name") ?: return@registerForActivityResult
+                    val phone = data.getStringExtra("phone") ?: return@registerForActivityResult
+                    val address = data.getStringExtra("address") ?: return@registerForActivityResult
+                    val checked = data.getBooleanExtra("checked", false)
 
-                // בדיקת קיומו של סטודנט ברשימה
-                val existingStudent = studentList.find { it.id == id }
-                if (existingStudent != null) {
-                    // עדכון פרטי סטודנט קיים
-                    existingStudent.name = name
-                    existingStudent.phone = phone
-                    existingStudent.address = address
-                    existingStudent.checked = checked
-                } else {
-                    // הוספת סטודנט חדש
-                    val newStudent = Student(name, id, phone, address, checked, R.drawable.ic_student)
-                    studentList.add(newStudent)
-                    Toast.makeText(this, "Student added successfully", Toast.LENGTH_SHORT).show()
+                    val index = studentList.indexOfFirst { it.id == id }
+                    if (index != -1) {
+                        val existingStudent = studentList[index]
+                        existingStudent.name = name
+                        existingStudent.phone = phone
+                        existingStudent.address = address
+                        existingStudent.checked = checked
+                        adapter.notifyItemChanged(index)
+                        Log.d("MainActivity", "Updated student: $existingStudent")
+                    } else {
+                        val newStudent = Student(name, id, phone, address, checked, R.drawable.ic_student)
+                        studentList.add(newStudent)
+                        adapter.notifyItemInserted(studentList.size - 1)
+                        Log.d("MainActivity", "Added new student: $newStudent")
+                    }
                 }
 
-                adapter.notifyDataSetChanged()
+                EditStudentActivity.DELETE_RESULT -> {
+                    val data = result.data
+                    val id = data?.getStringExtra("id") ?: return@registerForActivityResult
+
+                    val index = studentList.indexOfFirst { it.id == id }
+                    if (index != -1) {
+                        studentList.removeAt(index)
+                        adapter.notifyItemRemoved(index)
+                        Log.d("MainActivity", "Deleted student with ID: $id")
+                        Toast.makeText(this, "Student deleted successfully", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Log.d("MainActivity", "Student with ID: $id not found")
+                        Toast.makeText(this, "Student not found", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
         // הגדרת Adapter ל-RecyclerView
         adapter = StudentAdapter(studentList) { student ->
-            val intent = Intent(this, StudentDetailsActivity::class.java).apply {
+            val intent = Intent(this, EditStudentActivity::class.java).apply {
                 putExtra("name", student.name)
                 putExtra("id", student.id)
                 putExtra("phone", student.phone)
                 putExtra("address", student.address)
-                putExtra("imageResId", student.imageResId)
-                putExtra("checked", student.checked)
             }
-            resultLauncher.launch(intent) // שימוש ב-ActivityResultLauncher
+            resultLauncher.launch(intent)
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        // לחיצה על כפתור הוספת סטודנט
         fabAddStudent.setOnClickListener {
             val intent = Intent(this, AddStudentActivity::class.java)
             resultLauncher.launch(intent)
         }
 
-        // הוספת נתונים זמניים לבדיקה (רק בפעם הראשונה)
         if (studentList.isEmpty()) {
             studentList.add(Student("John Doe", "12345", "050-1234567", "Tel Aviv", false, R.drawable.ic_student))
             studentList.add(Student("Jane Smith", "67890", "052-7654321", "Jerusalem", true, R.drawable.ic_student))
             studentList.add(Student("Alice Brown", "11223", "054-9876543", "Haifa", false, R.drawable.ic_student))
         }
-
-        adapter.notifyDataSetChanged()
     }
 }
