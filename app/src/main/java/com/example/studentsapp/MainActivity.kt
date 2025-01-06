@@ -16,7 +16,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: StudentAdapter
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
-    private val studentList = mutableListOf<Student>()
+
+    companion object {
+        val studentList = mutableListOf<Student>()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,13 +32,27 @@ class MainActivity : AppCompatActivity() {
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
-                val studentId = data?.getStringExtra("id")
-                val isChecked = data?.getBooleanExtra("checked", false) ?: false
+                val name = data?.getStringExtra("name") ?: return@registerForActivityResult
+                val id = data.getStringExtra("id") ?: return@registerForActivityResult
+                val phone = data.getStringExtra("phone") ?: return@registerForActivityResult
+                val address = data.getStringExtra("address") ?: return@registerForActivityResult
+                val checked = data.getBooleanExtra("checked", false)
 
-                // עדכון הסטטוס ברשימת הסטודנטים
-                studentList.find { it.id == studentId }?.checked = isChecked
+                // בדיקת קיומו של סטודנט ברשימה
+                val existingStudent = studentList.find { it.id == id }
+                if (existingStudent != null) {
+                    // עדכון פרטי סטודנט קיים
+                    existingStudent.name = name
+                    existingStudent.phone = phone
+                    existingStudent.address = address
+                    existingStudent.checked = checked
+                } else {
+                    // הוספת סטודנט חדש
+                    val newStudent = Student(name, id, phone, address, checked, R.drawable.ic_student)
+                    studentList.add(newStudent)
+                    Toast.makeText(this, "Student added successfully", Toast.LENGTH_SHORT).show()
+                }
 
-                // עדכון ה-RecyclerView
                 adapter.notifyDataSetChanged()
             }
         }
@@ -58,13 +75,16 @@ class MainActivity : AppCompatActivity() {
 
         // לחיצה על כפתור הוספת סטודנט
         fabAddStudent.setOnClickListener {
-            Toast.makeText(this, "Add Student clicked", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, AddStudentActivity::class.java)
+            resultLauncher.launch(intent)
         }
 
-        // נתונים זמניים לבדיקה
-        studentList.add(Student("John Doe", "12345", "050-1234567", "Tel Aviv", false, R.drawable.ic_student))
-        studentList.add(Student("Jane Smith", "67890", "052-7654321", "Jerusalem", true, R.drawable.ic_student))
-        studentList.add(Student("Alice Brown", "11223", "054-9876543", "Haifa", false, R.drawable.ic_student))
+        // הוספת נתונים זמניים לבדיקה (רק בפעם הראשונה)
+        if (studentList.isEmpty()) {
+            studentList.add(Student("John Doe", "12345", "050-1234567", "Tel Aviv", false, R.drawable.ic_student))
+            studentList.add(Student("Jane Smith", "67890", "052-7654321", "Jerusalem", true, R.drawable.ic_student))
+            studentList.add(Student("Alice Brown", "11223", "054-9876543", "Haifa", false, R.drawable.ic_student))
+        }
 
         adapter.notifyDataSetChanged()
     }
