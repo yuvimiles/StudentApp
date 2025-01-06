@@ -4,20 +4,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
 import android.widget.CheckBox
+import androidx.recyclerview.widget.RecyclerView
 
 class StudentAdapter(
     private val students: List<Student>,
-    private val listener: (Student) -> Unit
+    private val onStudentClick: (Student) -> Unit // Callback לטיפול במעבר ל-Activity
 ) : RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
 
     inner class StudentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nameTextView: TextView = itemView.findViewById(R.id.textViewName)
-        val idTextView: TextView = itemView.findViewById(R.id.textViewId)
-        val imageViewStudent: ImageView = itemView.findViewById(R.id.imageViewStudent)
-        val checkboxChecked: CheckBox = itemView.findViewById(R.id.checkboxChecked)
+        private val nameTextView: TextView = itemView.findViewById(R.id.textViewName)
+        private val idTextView: TextView = itemView.findViewById(R.id.textViewId)
+        private val imageViewStudent: ImageView = itemView.findViewById(R.id.imageViewStudent)
+        private val checkboxChecked: CheckBox = itemView.findViewById(R.id.checkboxChecked)
 
         fun bind(student: Student) {
             nameTextView.text = student.name
@@ -32,14 +32,7 @@ class StudentAdapter(
 
             // לחיצה על כל הפריט למעבר לעמוד פרטי הסטודנט
             itemView.setOnClickListener {
-                val intent = android.content.Intent(itemView.context, StudentDetailsActivity::class.java)
-                intent.putExtra("name", student.name)
-                intent.putExtra("id", student.id)
-                intent.putExtra("phone", student.phone)
-                intent.putExtra("address", student.address)
-                intent.putExtra("imageResId", student.imageResId)
-                intent.putExtra("checked", student.checked)
-                itemView.context.startActivity(intent)
+                onStudentClick(student) // קריאה ל-Callback עם אובייקט הסטודנט
             }
         }
     }

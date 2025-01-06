@@ -1,5 +1,6 @@
 package com.example.studentsapp
 
+import android.app.Activity
 import android.os.Bundle
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -8,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 
 class StudentDetailsActivity : AppCompatActivity() {
+    private var isChecked: Boolean = false
+    private var studentId: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_details)
@@ -15,17 +19,15 @@ class StudentDetailsActivity : AppCompatActivity() {
         // הגדרת ה-Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        // הוספת כפתור חזרה
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // קבלת הנתונים מה-Intent
         val name = intent.getStringExtra("name") ?: "Unknown"
-        val id = intent.getStringExtra("id") ?: "Unknown"
+        studentId = intent.getStringExtra("id") ?: "Unknown"
         val phone = intent.getStringExtra("phone") ?: "Unknown"
         val address = intent.getStringExtra("address") ?: "Unknown"
         val imageResId = intent.getIntExtra("imageResId", R.drawable.ic_student)
-        val isChecked = intent.getBooleanExtra("checked", false)
+        isChecked = intent.getBooleanExtra("checked", false)
 
         // קישור Views
         val imageView: ImageView = findViewById(R.id.imageViewStudentDetails)
@@ -38,15 +40,25 @@ class StudentDetailsActivity : AppCompatActivity() {
         // עדכון Views עם הנתונים
         imageView.setImageResource(imageResId)
         nameTextView.text = "Name: $name"
-        idTextView.text = "ID: $id"
+        idTextView.text = "ID: $studentId"
         phoneTextView.text = "Phone: $phone"
         addressTextView.text = "Address: $address"
         checkboxChecked.isChecked = isChecked
+
+        // עדכון checked כשמשתמש לוחץ על ה-Checkbox
+        checkboxChecked.setOnCheckedChangeListener { _, isChecked ->
+            this.isChecked = isChecked
+        }
     }
 
-    // טיפול בלחיצה על כפתור החזרה
+    // טיפול בלחיצה על כפתור חזרה
     override fun onSupportNavigateUp(): Boolean {
-        finish() // חזרה לעמוד הקודם
+        // החזרת תוצאה לעמוד הראשי
+        val resultIntent = intent
+        resultIntent.putExtra("id", studentId)
+        resultIntent.putExtra("checked", isChecked)
+        setResult(Activity.RESULT_OK, resultIntent)
+        finish()
         return true
     }
 }
