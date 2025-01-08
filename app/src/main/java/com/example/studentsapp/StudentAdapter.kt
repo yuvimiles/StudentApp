@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class StudentAdapter(
     private val students: List<Student>,
-    private val onStudentClick: (Student) -> Unit // Callback לטיפול במעבר ל-Activity
+    private val onStudentClick: (Student) -> Unit
 ) : RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
 
     inner class StudentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -25,14 +25,12 @@ class StudentAdapter(
             imageViewStudent.setImageResource(student.imageResId)
             checkboxChecked.isChecked = student.checked
 
-            // עדכון הסטטוס של checked בעת לחיצה על ה-Checkbox
             checkboxChecked.setOnCheckedChangeListener { _, isChecked ->
                 student.checked = isChecked
             }
 
-            // לחיצה על כל הפריט למעבר לעמוד פרטי הסטודנט
             itemView.setOnClickListener {
-                onStudentClick(student) // קריאה ל-Callback עם אובייקט הסטודנט
+                onStudentClick(student)
             }
         }
     }

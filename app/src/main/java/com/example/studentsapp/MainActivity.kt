@@ -36,10 +36,8 @@ class MainActivity : AppCompatActivity() {
             when (result.resultCode) {
                 Activity.RESULT_OK -> {
                     if (data?.getBooleanExtra("delete", false) == true) {
-                        // אם זו בקשת מחיקה מ-StudentDetailsActivity
                         handleStudentDelete(data)
                     } else {
-                        // אם זה עדכון רגיל
                         handleStudentUpdate(data)
                     }
                 }
@@ -49,7 +47,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Setup RecyclerView Adapter
         adapter = StudentAdapter(studentList) { student ->
             val intent = Intent(this, StudentDetailsActivity::class.java).apply {
                 putExtra("name", student.name)
@@ -70,7 +67,6 @@ class MainActivity : AppCompatActivity() {
             resultLauncher.launch(intent)
         }
 
-        // Add sample data for testing
         if (studentList.isEmpty()) {
             studentList.add(Student("John Doe", "12345", "050-1234567", "Tel Aviv", false, R.drawable.ic_student))
             studentList.add(Student("Jane Smith", "67890", "052-7654321", "Jerusalem", true, R.drawable.ic_student))
@@ -111,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         if (index != -1) {
             studentList.removeAt(index)
             adapter.notifyItemRemoved(index)
-            adapter.notifyItemRangeChanged(index, studentList.size)  // עדכון מיקומים של פריטים נוספים
+            adapter.notifyItemRangeChanged(index, studentList.size)
             Log.d("MainActivity", "Deleted student with ID: $id")
             Toast.makeText(this, "Student deleted successfully", Toast.LENGTH_SHORT).show()
         } else {

@@ -18,12 +18,10 @@ class StudentDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_details)
 
-        // הגדרת ה-Toolbar
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // קבלת הנתונים מה-Intent
         val name = intent.getStringExtra("name") ?: "Unknown"
         studentId = intent.getStringExtra("id") ?: "Unknown"
         val phone = intent.getStringExtra("phone") ?: "Unknown"
@@ -31,7 +29,6 @@ class StudentDetailsActivity : AppCompatActivity() {
         val imageResId = intent.getIntExtra("imageResId", R.drawable.ic_student)
         isChecked = intent.getBooleanExtra("checked", false)
 
-        // קישור Views
         val imageView: ImageView = findViewById(R.id.imageViewStudentDetails)
         val nameTextView: TextView = findViewById(R.id.textViewStudentName)
         val idTextView: TextView = findViewById(R.id.textViewStudentId)
@@ -40,7 +37,6 @@ class StudentDetailsActivity : AppCompatActivity() {
         val checkboxChecked: CheckBox = findViewById(R.id.checkboxCheckedDetails)
         val editButton: Button = findViewById(R.id.buttonEditStudent)
 
-        // עדכון Views עם הנתונים
         imageView.setImageResource(imageResId)
         nameTextView.text = "Name: $name"
         idTextView.text = "ID: $studentId"
@@ -48,12 +44,10 @@ class StudentDetailsActivity : AppCompatActivity() {
         addressTextView.text = "Address: $address"
         checkboxChecked.isChecked = isChecked
 
-        // עדכון checked כשמשתמש לוחץ על ה-Checkbox
         checkboxChecked.setOnCheckedChangeListener { _, isChecked ->
             this.isChecked = isChecked
         }
 
-        // לחיצה על כפתור "Edit Student"
         editButton.setOnClickListener {
             val intent = Intent(this, EditStudentActivity::class.java).apply {
                 putExtra("name", name)
@@ -66,7 +60,6 @@ class StudentDetailsActivity : AppCompatActivity() {
         }
     }
 
-    // טיפול בתוצאה שמגיעה ממסך עריכת הסטודנט
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -78,13 +71,11 @@ class StudentDetailsActivity : AppCompatActivity() {
                     val updatedAddress = data.getStringExtra("address") ?: return
                     val updatedChecked = data.getBooleanExtra("checked", false)
 
-                    // עדכון ה-Views עם הנתונים החדשים
                     findViewById<TextView>(R.id.textViewStudentName).text = "Name: $updatedName"
                     findViewById<TextView>(R.id.textViewStudentPhone).text = "Phone: $updatedPhone"
                     findViewById<TextView>(R.id.textViewStudentAddress).text = "Address: $updatedAddress"
                     findViewById<CheckBox>(R.id.checkboxCheckedDetails).isChecked = updatedChecked
 
-                    // עדכון הנתונים שנשלחים בחזרה ל-MainActivity
                     isChecked = updatedChecked
                     intent.putExtra("name", updatedName)
                     intent.putExtra("phone", updatedPhone)
@@ -93,7 +84,6 @@ class StudentDetailsActivity : AppCompatActivity() {
                 }
             }
             EditStudentActivity.DELETE_RESULT -> {
-                // העברת בקשת המחיקה ל-MainActivity
                 val resultIntent = Intent()
                 resultIntent.putExtra("id", studentId)
                 resultIntent.putExtra("delete", true)
@@ -103,9 +93,7 @@ class StudentDetailsActivity : AppCompatActivity() {
         }
     }
 
-    // טיפול בלחיצה על כפתור חזרה
     override fun onSupportNavigateUp(): Boolean {
-        // החזרת תוצאה לעמוד הראשי
         val resultIntent = intent
         resultIntent.putExtra("id", studentId)
         resultIntent.putExtra("checked", isChecked)

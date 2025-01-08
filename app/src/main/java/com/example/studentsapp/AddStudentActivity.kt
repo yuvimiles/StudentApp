@@ -14,7 +14,6 @@ class AddStudentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_student)
 
-        // קישור Views
         val nameEditText: EditText = findViewById(R.id.editTextName)
         val idEditText: EditText = findViewById(R.id.editTextId)
         val phoneEditText: EditText = findViewById(R.id.editTextPhone)
@@ -22,7 +21,6 @@ class AddStudentActivity : AppCompatActivity() {
         val addButton: Button = findViewById(R.id.buttonAddStudent)
         val cancelButton: Button = findViewById(R.id.buttonCancel)
 
-        // לחיצה על כפתור הוספה
         addButton.setOnClickListener {
             val name = nameEditText.text.toString()
             val id = idEditText.text.toString()
@@ -30,7 +28,6 @@ class AddStudentActivity : AppCompatActivity() {
             val address = addressEditText.text.toString()
 
             if (name.isNotBlank() && id.isNotBlank() && phone.isNotBlank() && address.isNotBlank()) {
-                // יצירת אובייקט Student חדש
                 val intent = Intent().apply {
                     putExtra("name", name)
                     putExtra("id", id)
@@ -44,7 +41,6 @@ class AddStudentActivity : AppCompatActivity() {
             }
         }
 
-        // לחיצה על כפתור ביטול
         cancelButton.setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
             finish()

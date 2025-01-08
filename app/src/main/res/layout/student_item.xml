@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <!-- תמונת הסטודנט -->
     <ImageView
         android:id="@+id/imageViewStudent"
         android:layout_width="48dp"
@@ -17,7 +16,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- שם הסטודנט -->
     <TextView
         android:id="@+id/textViewName"
         android:layout_width="0dp"
@@ -28,7 +26,6 @@
         app:layout_constraintStart_toEndOf="@id/imageViewStudent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- תעודת הזהות של הסטודנט -->
     <TextView
         android:id="@+id/textViewId"
         android:layout_width="0dp"
@@ -48,7 +45,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Checkbox -->
     <CheckBox
         android:id="@+id/checkboxChecked"
         android:layout_width="wrap_content"

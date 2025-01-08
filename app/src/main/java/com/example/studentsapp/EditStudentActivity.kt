@@ -11,14 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 class EditStudentActivity : AppCompatActivity() {
 
     companion object {
-        const val DELETE_RESULT = 2 // קוד ייחודי למחיקה
+        const val DELETE_RESULT = 2
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_student)
 
-        // קישור רכיבים
         val nameEditText: EditText = findViewById(R.id.editTextEditName)
         val idEditText: EditText = findViewById(R.id.editTextEditId)
         val phoneEditText: EditText = findViewById(R.id.editTextEditPhone)
@@ -26,7 +25,6 @@ class EditStudentActivity : AppCompatActivity() {
         val saveButton: Button = findViewById(R.id.buttonSaveStudent)
         val deleteButton: Button = findViewById(R.id.buttonDeleteStudent)
 
-        // קבלת נתונים
         val name = intent.getStringExtra("name") ?: ""
         val id = intent.getStringExtra("id") ?: ""
         val phone = intent.getStringExtra("phone") ?: ""
@@ -37,7 +35,6 @@ class EditStudentActivity : AppCompatActivity() {
         phoneEditText.setText(phone)
         addressEditText.setText(address)
 
-        // שמירת שינויים
         saveButton.setOnClickListener {
             val resultIntent = Intent().apply {
                 putExtra("name", nameEditText.text.toString())
@@ -49,7 +46,6 @@ class EditStudentActivity : AppCompatActivity() {
             finish()
         }
 
-        // מחיקת סטודנט
         deleteButton.setOnClickListener {
             val resultIntent = Intent().apply {
                 putExtra("id", idEditText.text.toString())

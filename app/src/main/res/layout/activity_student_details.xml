@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -16,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- כותרת נוספת -->
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="0dp"
@@ -30,7 +28,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ScrollView לכל הפרטים -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -46,7 +43,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- תמונת הסטודנט -->
             <ImageView
                 android:id="@+id/imageViewStudentDetails"
                 android:layout_width="120dp"
@@ -54,7 +50,6 @@
                 android:layout_gravity="center"
                 android:src="@drawable/ic_student" />
 
-            <!-- שם הסטודנט -->
             <TextView
                 android:id="@+id/textViewStudentName"
                 android:layout_width="wrap_content"
@@ -63,7 +58,6 @@
                 android:text="Name: John Doe"
                 android:textSize="20sp" />
 
-            <!-- תעודת זהות -->
             <TextView
                 android:id="@+id/textViewStudentId"
                 android:layout_width="wrap_content"
@@ -71,7 +65,6 @@
                 android:text="ID: 12345"
                 android:textSize="20sp" />
 
-            <!-- טלפון -->
             <TextView
                 android:id="@+id/textViewStudentPhone"
                 android:layout_width="wrap_content"
@@ -79,7 +72,6 @@
                 android:text="Phone: 050-1234567"
                 android:textSize="20sp" />
 
-            <!-- כתובת -->
             <TextView
                 android:id="@+id/textViewStudentAddress"
                 android:layout_width="wrap_content"
@@ -87,14 +79,12 @@
                 android:text="Address: Tel Aviv"
                 android:textSize="20sp" />
 
-            <!-- Checkbox -->
             <CheckBox
                 android:id="@+id/checkboxCheckedDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Checked" />
 
-            <!-- כפתור Edit Student -->
             <Button
                 android:id="@+id/buttonEditStudent"
                 android:layout_width="match_parent"
