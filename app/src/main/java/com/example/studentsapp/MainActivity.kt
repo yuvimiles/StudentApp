@@ -68,9 +68,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (studentList.isEmpty()) {
-            studentList.add(Student("John Doe", "12345", "050-1234567", "Tel Aviv", false, R.drawable.ic_student))
-            studentList.add(Student("Jane Smith", "67890", "052-7654321", "Jerusalem", true, R.drawable.ic_student))
-            studentList.add(Student("Alice Brown", "11223", "054-9876543", "Haifa", false, R.drawable.ic_student))
+            studentList.add(Student("Imri Moyal", "00001", "052-7654321", "Rishon Lezion", true, R.drawable.ic_student))
+            studentList.add(Student("Yuval Miles", "00002", "050-1234567", "Tel Aviv", false, R.drawable.ic_student))
+            studentList.add(Student("Eviya babay", "00003", "052-7654344", "Jerusalem", true, R.drawable.ic_student))
+            studentList.add(Student("Matan Ben Sahel", "00004", "054-9876555", "Haifa", false, R.drawable.ic_student))
+            studentList.add(Student("Or Natan", "00005", "054-9876543", "Ramla", false, R.drawable.ic_student))
         }
     }
 
